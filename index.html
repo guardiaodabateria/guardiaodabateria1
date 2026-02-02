@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guardião da Bateria</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --fundo: #020617;
+  --card: #0b1220;
+  --azul: #1e90ff;
+  --azul-claro: #4aa3ff;
+  --cinza: #9ca3af;
+  --branco: #ffffff;
+}
+
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  color: var(--branco);
+}
+
+header {
+  text-align: center;
+  padding: 30px 15px;
+}
+
+header img {
+  max-width: 240px;
+}
+
+.aviso-topo {
+  margin: 20px auto 0;
+  max-width: 500px;
+  padding: 14px;
+  background: rgba(30,144,255,0.08);
+  border: 1px solid rgba(30,144,255,0.6);
+  border-radius: 12px;
+  color: #dbeafe;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 520px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: linear-gradient(180deg, #0b1220, #020617);
+  border: 1px solid rgba(30,144,255,0.3);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 18px rgba(30,144,255,0.15);
+}
+
+label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--cinza);
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: none;
+  background: #020617;
+  color: var(--branco);
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  background: linear-gradient(135deg, #1e90ff, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(30,144,255,0.5);
+}
+
+button:hover {
+  background: linear-gradient(135deg, #4aa3ff, #1e40af);
+}
+
+.resumo {
+  font-size: 14px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="Guardião da Bateria">
+  <div class="aviso-topo">
+    🔔 <strong>ATENÇÃO:</strong> Trabalhamos <strong>somente por encomenda</strong>.<br>
+    Entregas conforme regras de horário.
+  </div>
+</header>
+
+<div class="container">
+
+<div class="card">
+<label>Tipo de serviço</label>
+<select id="servico" onchange="trocarServico()">
+  <option value="">Selecione</option>
+  <option value="bateria">Troca de bateria</option>
+  <option value="socorro">Socorro / Transferência de carga</option>
+</select>
+
+<div id="bateriaBox" style="display:none;">
+<label>Bateria</label>
+<select id="bateria">
+  <option value="">Selecione</option>
+  <option value="Impact 60A - R$ 349">Impact 60A - R$ 349</option>
+  <option value="Moura 60A - R$ 519">Moura 60A - R$ 519</option>
+  <option value="Impact 70A - R$ 399">Impact 70A - R$ 399</option>
+</select>
+</div>
+
+<label>Veículo</label>
+<input id="veiculo" placeholder="Ex: Gol 1.6 2015">
+
+<label>Endereço de entrega</label>
+<input id="endereco" placeholder="Rua, número e bairro">
+
+<label>Data</label>
+<input type="date" id="data" onchange="gerarHorarios()">
+
+<label>Horário</label>
+<select id="hora"></select>
+</div>
+
+<div class="card">
+<div class="resumo" id="resumo"></div>
+<button onclick="enviarWhats()">Finalizar no WhatsApp</button>
+</div>
+
+</div>
+
+<script>
+function trocarServico() {
+  const servico = document.getElementById('servico').value;
+  document.getElementById('bateriaBox').style.display =
+    servico === 'bateria' ? 'block' : 'none';
+}
+
+function gerarHorarios() {
+  const horaSelect = document.getElementById('hora');
+  horaSelect.innerHTML = '<option value="">Selecione</option>';
+
+  const data = new Date(document.getElementById('data').value + 'T00:00');
+  const agora = new Date();
+  const dia = data.getDay();
+
+  function intervalos(inicio, fim) {
+    for (let h = inicio; h < fim; h += 0.5) {
+      const hora = Math.floor(h).toString().padStart(2,'0');
+      const min = h % 1 === 0 ? '00' : '30';
+      horaSelect.innerHTML += `<option>${hora}:${min}</option>`;
+    }
+  }
+
+  if (dia >= 1 && dia <= 5) {
+    if (data.toDateString() === agora.toDateString() && agora.getHours() >= 18) {
+      alert('Agendamentos para hoje encerrados.');
+      document.getElementById('data').value = '';
+      return;
+    }
+    intervalos(18.5, 24);
+  }
+
+  if (dia === 6) intervalos(13, 22);
+  if (dia === 0) intervalos(9, 22);
+}
+
+function enviarWhats() {
+  const servico = document.getElementById('servico').value;
+  const bateria = document.getElementById('bateria').value || 'Socorro - R$ 50';
+  const veiculo = document.getElementById('veiculo').value;
+  const endereco = document.getElementById('endereco').value;
+  const data = document.getElementById('data').value;
+  const hora = document.getElementById('hora').value;
+
+  if (!servico || !veiculo || !endereco || !data || !hora) {
+    alert('Preencha todos os campos');
+    return;
+  }
+
+  const msg =
+`Novo Agendamento
+Serviço: ${servico}
+Veículo: ${veiculo}
+Endereço: ${endereco}
+Item: ${bateria}
+Data: ${data}
+Horário: ${hora}`;
+
+  window.open(
+    `https://wa.me/554391261624?text=${encodeURIComponent(msg)}`,
+    '_blank'
+  );
+}
+</script>
+
+</body>
+</html>
