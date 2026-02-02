@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>GuardiÃ£o da Bateria</title>
+<title>Guardião da Bateria</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -15,7 +15,10 @@
   --branco: #ffffff;
 }
 
-* { box-sizing: border-box; font-family: Arial, sans-serif; }
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
 
 body {
   margin: 0;
@@ -34,7 +37,7 @@ header img {
 
 .aviso-topo {
   margin: 20px auto 0;
-  max-width: 500px;
+  max-width: 520px;
   padding: 14px;
   background: rgba(30,144,255,0.08);
   border: 1px solid rgba(30,144,255,0.6);
@@ -96,6 +99,10 @@ button:hover {
   font-size: 14px;
   margin-top: 10px;
   line-height: 1.6;
+  background: rgba(30,144,255,0.05);
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(30,144,255,0.3);
 }
 </style>
 </head>
@@ -103,48 +110,52 @@ button:hover {
 <body>
 
 <header>
-  <img src="logo.png" alt="GuardiÃ£o da Bateria">
+  <img src="logo.png" alt="Guardião da Bateria">
   <div class="aviso-topo">
-    ðŸ”” <strong>ATENÃ‡ÃƒO:</strong> Trabalhamos <strong>somente por encomenda</strong>.<br>
-    Entregas conforme regras de horÃ¡rio.
+     <strong>ATENÇÃO:</strong> Trabalhamos <strong>somente por encomenda</strong>.<br>
+    Entregas conforme regras de horário.
   </div>
 </header>
 
 <div class="container">
 
 <div class="card">
-<label>Tipo de serviÃ§o</label>
-<select id="servico" onchange="trocarServico()">
+<label>Tipo de serviço</label>
+<select id="servico" onchange="trocarServico(); atualizarResumo()">
   <option value="">Selecione</option>
-  <option value="bateria">Troca de bateria</option>
-  <option value="socorro">Socorro / TransferÃªncia de carga</option>
+  <option value="Troca de bateria">Troca de bateria</option>
+  <option value="Socorro / Transferência de carga">Socorro / Transferência de carga</option>
 </select>
 
 <div id="bateriaBox" style="display:none;">
 <label>Bateria</label>
-<select id="bateria">
+<select id="bateria" onchange="atualizarResumo()">
   <option value="">Selecione</option>
-  <option value="Impact 60A - R$ 349">Impact 60A - R$ 349</option>
-  <option value="Moura 60A - R$ 519">Moura 60A - R$ 519</option>
-  <option value="Impact 70A - R$ 399">Impact 70A - R$ 399</option>
+  <option value="Impact 60A – R$ 349">Impact 60A – R$ 349</option>
+  <option value="Moura 60A – R$ 519">Moura 60A – R$ 519</option>
+  <option value="Impact 70A – R$ 399">Impact 70A – R$ 399</option>
 </select>
 </div>
 
-<label>VeÃ­culo</label>
-<input id="veiculo" placeholder="Ex: Gol 1.6 2015">
+<label>Veículo</label>
+<input id="veiculo" placeholder="Ex: Gol 1.6 2015" oninput="atualizarResumo()">
 
-<label>EndereÃ§o de entrega</label>
-<input id="endereco" placeholder="Rua, nÃºmero e bairro">
+<label>Endereço de entrega</label>
+<input id="endereco" placeholder="Rua, número e bairro" oninput="atualizarResumo()">
 
 <label>Data</label>
-<input type="date" id="data" onchange="gerarHorarios()">
+<input type="date" id="data" onchange="gerarHorarios(); atualizarResumo()">
 
-<label>HorÃ¡rio</label>
-<select id="hora"></select>
+<label>Horário</label>
+<select id="hora" onchange="atualizarResumo()"></select>
 </div>
 
 <div class="card">
-<div class="resumo" id="resumo"></div>
+<div class="resumo" id="resumo">
+<strong>Resumo do pedido:</strong><br>
+Preencha os dados acima para visualizar.
+</div>
+
 <button onclick="enviarWhats()">Finalizar no WhatsApp</button>
 </div>
 
@@ -154,7 +165,7 @@ button:hover {
 function trocarServico() {
   const servico = document.getElementById('servico').value;
   document.getElementById('bateriaBox').style.display =
-    servico === 'bateria' ? 'block' : 'none';
+    servico === 'Troca de bateria' ? 'block' : 'none';
 }
 
 function gerarHorarios() {
@@ -186,27 +197,53 @@ function gerarHorarios() {
   if (dia === 0) intervalos(9, 22);
 }
 
+function atualizarResumo() {
+  const servico = document.getElementById('servico').value;
+  const bateria = document.getElementById('bateria')?.value || '';
+  const veiculo = document.getElementById('veiculo').value;
+  const endereco = document.getElementById('endereco').value;
+  const data = document.getElementById('data').value;
+  const hora = document.getElementById('hora').value;
+
+  let texto = '<strong>Resumo do pedido:</strong><br><br>';
+
+  if (servico) texto += ` Serviço: ${servico}<br>`;
+  if (servico === 'Troca de bateria' && bateria)
+    texto += ` Bateria: ${bateria}<br>`;
+  if (servico.includes('Socorro'))
+    texto += ` Socorro: R$ 50,00<br>`;
+  if (veiculo) texto += ` Veículo: ${veiculo}<br>`;
+  if (endereco) texto += ` Endereço: ${endereco}<br>`;
+  if (data) texto += ` Data: ${data}<br>`;
+  if (hora) texto += ` Horário: ${hora}<br>`;
+
+  document.getElementById('resumo').innerHTML = texto;
+}
+
 function enviarWhats() {
   const servico = document.getElementById('servico').value;
-  const bateria = document.getElementById('bateria').value || 'Socorro - R$ 50';
+  const bateria = document.getElementById('bateria')?.value || 'Socorro – R$ 50';
   const veiculo = document.getElementById('veiculo').value;
   const endereco = document.getElementById('endereco').value;
   const data = document.getElementById('data').value;
   const hora = document.getElementById('hora').value;
 
   if (!servico || !veiculo || !endereco || !data || !hora) {
-    alert('Preencha todos os campos');
+    alert('Preencha todos os campos.');
     return;
   }
 
   const msg =
-`Novo Agendamento
-ServiÃ§o: ${servico}
-VeÃ­culo: ${veiculo}
-EndereÃ§o: ${endereco}
+`Novo agendamento – Guardião da Bateria
+
+Serviço: ${servico}
 Item: ${bateria}
+Veículo: ${veiculo}
+Endereço: ${endereco}
 Data: ${data}
-HorÃ¡rio: ${hora}`;
+Horário: ${hora}
+
+Aguardando confirmação.`;
 
   window.open(
     `https://wa.me/554391261624?text=${encodeURIComponent(msg)}`,
