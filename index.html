@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Guardião da Bateria</title>
+<title>Guardiï¿½o da Bateria</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -110,43 +110,43 @@ button:hover {
 <body>
 
 <header>
-  <img src="logo.png" alt="Guardião da Bateria">
+  <img src="logo.png" alt="Guardiï¿½o da Bateria">
   <div class="aviso-topo">
-     <strong>ATENÇÃO:</strong> Trabalhamos <strong>somente por encomenda</strong>.<br>
-    Entregas conforme regras de horário.
+     <strong>ATENï¿½ï¿½O:</strong> Trabalhamos <strong>somente por encomenda</strong>.<br>
+    Entregas conforme regras de horï¿½rio.
   </div>
 </header>
 
 <div class="container">
 
 <div class="card">
-<label>Tipo de serviço</label>
+<label>Tipo de serviï¿½o</label>
 <select id="servico" onchange="trocarServico(); atualizarResumo()">
   <option value="">Selecione</option>
   <option value="Troca de bateria">Troca de bateria</option>
-  <option value="Socorro / Transferência de carga">Socorro / Transferência de carga</option>
+  <option value="Socorro / Transferï¿½ncia de carga">Socorro / Transferï¿½ncia de carga</option>
 </select>
 
 <div id="bateriaBox" style="display:none;">
 <label>Bateria</label>
 <select id="bateria" onchange="atualizarResumo()">
   <option value="">Selecione</option>
-  <option value="Impact 60A – R$ 349">Impact 60A – R$ 349</option>
-  <option value="Moura 60A – R$ 519">Moura 60A – R$ 519</option>
-  <option value="Impact 70A – R$ 399">Impact 70A – R$ 399</option>
+  <option value="Impact 60A ï¿½ R$ 349">Impact 60A ï¿½ R$ 349</option>
+  <option value="Moura 60A ï¿½ R$ 519">Moura 60A ï¿½ R$ 519</option>
+  <option value="Impact 70A ï¿½ R$ 399">Impact 70A ï¿½ R$ 399</option>
 </select>
 </div>
 
-<label>Veículo</label>
+<label>Veï¿½culo</label>
 <input id="veiculo" placeholder="Ex: Gol 1.6 2015" oninput="atualizarResumo()">
 
-<label>Endereço de entrega</label>
-<input id="endereco" placeholder="Rua, número e bairro" oninput="atualizarResumo()">
+<label>Endereï¿½o de entrega</label>
+<input id="endereco" placeholder="Rua, nï¿½mero e bairro" oninput="atualizarResumo()">
 
 <label>Data</label>
 <input type="date" id="data" onchange="gerarHorarios(); atualizarResumo()">
 
-<label>Horário</label>
+<label>Horï¿½rio</label>
 <select id="hora" onchange="atualizarResumo()"></select>
 </div>
 
@@ -207,22 +207,22 @@ function atualizarResumo() {
 
   let texto = '<strong>Resumo do pedido:</strong><br><br>';
 
-  if (servico) texto += ` Serviço: ${servico}<br>`;
+  if (servico) texto += ` Serviï¿½o: ${servico}<br>`;
   if (servico === 'Troca de bateria' && bateria)
     texto += ` Bateria: ${bateria}<br>`;
   if (servico.includes('Socorro'))
     texto += ` Socorro: R$ 50,00<br>`;
-  if (veiculo) texto += ` Veículo: ${veiculo}<br>`;
-  if (endereco) texto += ` Endereço: ${endereco}<br>`;
+  if (veiculo) texto += ` Veï¿½culo: ${veiculo}<br>`;
+  if (endereco) texto += ` Endereï¿½o: ${endereco}<br>`;
   if (data) texto += ` Data: ${data}<br>`;
-  if (hora) texto += ` Horário: ${hora}<br>`;
+  if (hora) texto += ` Horï¿½rio: ${hora}<br>`;
 
   document.getElementById('resumo').innerHTML = texto;
 }
 
 function enviarWhats() {
   const servico = document.getElementById('servico').value;
-  const bateria = document.getElementById('bateria')?.value || 'Socorro – R$ 50';
+  const bateria = document.getElementById('bateria')?.value || 'Socorro ï¿½ R$ 50';
   const veiculo = document.getElementById('veiculo').value;
   const endereco = document.getElementById('endereco').value;
   const data = document.getElementById('data').value;
@@ -234,16 +234,16 @@ function enviarWhats() {
   }
 
   const msg =
-`Novo agendamento – Guardião da Bateria
+`Novo agendamento ï¿½ Guardiï¿½o da Bateria
 
-Serviço: ${servico}
+Serviï¿½o: ${servico}
 Item: ${bateria}
-Veículo: ${veiculo}
-Endereço: ${endereco}
+Veï¿½culo: ${veiculo}
+Endereï¿½o: ${endereco}
 Data: ${data}
-Horário: ${hora}
+Horï¿½rio: ${hora}
 
-Aguardando confirmação.`;
+Aguardando confirmaï¿½ï¿½o.`;
 
   window.open(
     `https://wa.me/554391261624?text=${encodeURIComponent(msg)}`,
