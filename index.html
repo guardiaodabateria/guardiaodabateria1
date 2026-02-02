@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Guardião da Bateria | Agendamento Noturno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #0f1b2b;
+      color: #ffffff;
+    }
+
+    header {
+      background-color: #13233a;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #f5c400;
+      font-size: 28px;
+    }
+
+    header p {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #d0d6e0;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .alert {
+      background-color: #1f3557;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    h2 {
+      color: #f5c400;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .btn {
+      margin-top: 25px;
+      width: 100%;
+      padding: 15px;
+      background-color: #f5c400;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #ffd84d;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #b0b8c5;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Guardião da Bateria</h1>
+  <p>Atendimento noturno • Trabalhamos por encomenda</p>
+</header>
+
+<div class="container">
+
+  <div class="alert">
+    🔔 <strong>Importante:</strong><br>
+    • Trabalhamos somente por encomenda<br>
+    • Atendimento noturno a partir das 18:30<br>
+    • Socorro técnico: <strong>R$ 50,00</strong>
+  </div>
+
+  <h2>Fazer pedido</h2>
+
+  <label>Nome do cliente</label>
+  <input type="text" id="nome">
+
+  <label>Produto ou serviço</label>
+  <input type="text" id="produto">
+
+  <label>Endereço para entrega</label>
+  <textarea id="endereco" rows="3"></textarea>
+
+  <label>Data do agendamento</label>
+  <input type="date" id="data">
+
+  <label>Horário</label>
+  <select id="hora">
+    <option>18:30</option>
+    <option>19:00</option>
+    <option>19:30</option>
+    <option>20:00</option>
+    <option>20:30</option>
+    <option>21:00</option>
+    <option>21:30</option>
+    <option>22:00</option>
+  </select>
+
+  <button class="btn" onclick="enviarWhatsApp()">Finalizar pedido no WhatsApp</button>
+
+  <div class="footer">
+    Atendimento em Londrina e região<br>
+    WhatsApp: (43) 9 9126-1624
+  </div>
+
+</div>
+
+<script>
+  function enviarWhatsApp() {
+    const nome = document.getElementById("nome").value;
+    const produto = document.getElementById("produto").value;
+    const endereco = document.getElementById("endereco").value;
+    const data = document.getElementById("data").value;
+    const hora = document.getElementById("hora").value;
+
+    const mensagem =
+      "Pedido Guardião da Bateria%0A%0A" +
+      "Nome: " + nome + "%0A" +
+      "Produto/Serviço: " + produto + "%0A" +
+      "Endereço: " + endereco + "%0A" +
+      "Data: " + data + "%0A" +
+      "Horário: " + hora;
+
+    const telefone = "5543911261624";
+    window.open("https://wa.me/" + telefone + "?text=" + mensagem, "_blank");
+  }
+</script>
+
+</body>
+</html>
