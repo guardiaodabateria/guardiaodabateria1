@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Guardião da Bateria | Agendamento Noturno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #0b1320;
+      color: #ffffff;
+    }
+
+    header {
+    <img src="logo.png" alt="Guardi�o da Bateria" style="max-height:160px;">
+      background: linear-gradient(135deg, #0b1320, #0f2a4a);
+      padding: 25px 15px;
+      text-align: center;
+      border-bottom: 1px solid #1e3a5f;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #3aa0ff;
+      font-size: 28px;
+    }
+
+    header p {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #c7d6ea;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .alert {
+      background-color: #101e33;
+      border-left: 4px solid #3aa0ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    h2 {
+      color: #3aa0ff;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 11px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+      background-color: #162840;
+      color: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .resumo {
+      margin-top: 25px;
+      padding: 15px;
+      background-color: #0f223d;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .resumo strong {
+      color: #3aa0ff;
+    }
+
+    .btn {
+      margin-top: 25px;
+      width: 100%;
+      padding: 15px;
+      background-color: #3aa0ff;
+      color: #000;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #67b7ff;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #9fb4cc;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Guardião da Bateria</h1>
+  <p>Atendimento noturno • Trabalhamos por encomenda</p>
+</header>
+
+<div class="container">
+
+  <div class="alert">
+    🔔 <strong>Atenção antes de prosseguir:</strong><br>
+    • Trabalhamos exclusivamente por encomenda<br>
+    • Atendimento e entregas a partir das 18:30
+  </div>
+
+  <h2>Dados do pedido</h2>
+
+  <label>Nome do cliente</label>
+  <input type="text" id="nome" oninput="atualizarResumo()">
+
+  <label>Produto ou serviço</label>
+  <select id="produto" onchange="atualizarResumo()">
+    <option value="">Selecione</option>
+    <option>Bateria automotiva</option>
+    <option>Socorro / Transferência de carga</option>
+  </select>
+
+  <label>Endereço para entrega</label>
+  <textarea id="endereco" rows="3" oninput="atualizarResumo()"></textarea>
+
+  <label>Data do agendamento</label>
+  <input type="date" id="data" onchange="atualizarResumo()">
+
+  <label>Horário</label>
+  <select id="hora" onchange="atualizarResumo()">
+    <option>18:30</option>
+    <option>19:00</option>
+    <option>19:30</option>
+    <option>20:00</option>
+    <option>20:30</option>
+    <option>21:00</option>
+    <option>21:30</option>
+    <option>22:00</option>
+  </select>
+
+  <div class="resumo" id="resumo">
+    <strong>Resumo do pedido:</strong><br>
+    Preencha os dados acima
+  </div>
+
+  <button class="btn" onclick="enviarWhatsApp()">Finalizar no WhatsApp</button>
+
+  <div class="footer">
+    Atendimento em Rolândia<br>
+    WhatsApp: (43) 9 9126-1624
+  </div>
+
+</div>
+
+<script>
+  function atualizarResumo() {
+    const nome = document.getElementById("nome").value;
+    const produto = document.getElementById("produto").value;
+    const endereco = document.getElementById("endereco").value;
+    const data = document.getElementById("data").value;
+    const hora = document.getElementById("hora").value;
+
+    let valorExtra = "";
+    if (produto === "Socorro / Transferência de carga") {
+      valorExtra = "<br><strong>Valor do socorro:</strong> R$ 50,00";
+    }
+
+    document.getElementById("resumo").innerHTML =
+      "<strong>Resumo do pedido:</strong><br>" +
+      "Cliente: " + nome + "<br>" +
+      "Serviço: " + produto + "<br>" +
+      "Endereço: " + endereco + "<br>" +
+      "Data: " + data + "<br>" +
+      "Horário: " + hora +
+      valorExtra;
+  }
+
+  function enviarWhatsApp() {
+    const resumoTexto = document.getElementById("resumo").innerText;
+    const telefone = "5543911261624";
+    const mensagem = encodeURIComponent(resumoTexto);
+
+    window.open("https://wa.me/" + telefone + "?text=" + mensagem, "_blank");
+  }
+</script>
+
+</body>
+</html>
