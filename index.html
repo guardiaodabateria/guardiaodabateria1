@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guardião da Bateria | Atendimento Noturno</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0b1320;
+  color: #ffffff;
+}
+
+header {
+  background: linear-gradient(135deg, #0b1320, #0f2a4a);
+  padding: 25px 15px;
+  text-align: center;
+  border-bottom: 1px solid #1e3a5f;
+}
+
+.logo {
+  max-height: 150px;
+  margin-bottom: 10px;
+}
+
+header h1 {
+  margin: 0;
+  color: #3aa0ff;
+  font-size: 28px;
+}
+
+header p {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #c7d6ea;
+}
+
+.container {
+  padding: 20px;
+  max-width: 650px;
+  margin: auto;
+}
+
+.alert {
+  background-color: #101e33;
+  border-left: 4px solid #3aa0ff;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 11px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  background-color: #162840;
+  color: #ffffff;
+}
+
+textarea { resize: vertical; }
+
+.resumo {
+  margin-top: 25px;
+  padding: 15px;
+  background-color: #0f223d;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.resumo strong { color: #3aa0ff; }
+
+.btn {
+  margin-top: 25px;
+  width: 100%;
+  padding: 15px;
+  background-color: #3aa0ff;
+  color: #000;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #9fb4cc;
+  margin-top: 30px;
+}
+
+.hidden { display: none; }
+
+.whatsapp-ajuda {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25d366;
+  color: #000;
+  padding: 14px 18px;
+  border-radius: 50px;
+  font-weight: bold;
+  text-decoration: none;
+  z-index: 999;
+}
+</style>
+</head>
+
+<body>
+
+<a class="whatsapp-ajuda"
+   href="https://wa.me/5543991261624"
+   target="_blank">
+🆘 Precisa de ajuda?
+</a>
+
+<header>
+  <img src="logo.png" class="logo" alt="Guardião da Bateria"
+       onerror="this.style.display='none'">
+  <h1>Guardião da Bateria</h1>
+  <p>Atendimento noturno • Trabalhamos por encomenda</p>
+</header>
+
+<div class="container">
+
+<div class="alert">
+🔔 <strong>Importante:</strong><br>
+• Trabalhamos exclusivamente por encomenda<br>
+• Atendimento e entregas a partir das 18:30
+</div>
+
+<label>Nome do cliente</label>
+<input id="nome" oninput="atualizarResumo()">
+
+<label>Selecione a amperagem</label>
+<select id="amperagem" onchange="carregarProdutos()">
+<option value="">Selecione</option>
+<option value="60">60 Amperes</option>
+<option value="70">70 Amperes</option>
+</select>
+
+<div id="produtoBox" class="hidden">
+<label>Bateria disponível</label>
+<select id="produto" onchange="atualizarResumo()"></select>
+</div>
+
+<label>Casco da bateria</label>
+<select id="casco" onchange="atualizarResumo()">
+<option value="">Selecione</option>
+<option value="troca">Base de troca</option>
+<option value="novo">Precisa do casco</option>
+</select>
+
+<label>Endereço de entrega</label>
+<textarea id="endereco" rows="3" oninput="atualizarResumo()"></textarea>
+
+<label>Forma de pagamento</label>
+<select id="pagamento" onchange="atualizarResumo()">
+<option value="">Selecione</option>
+<option>Dinheiro</option>
+<option>Débito</option>
+<option>Pix</option>
+<option>Parcelado</option>
+</select>
+
+<div id="trocoBox" class="hidden">
+<label>Troco para quanto?</label>
+<input id="troco" type="number" oninput="atualizarResumo()">
+</div>
+
+<div id="parcelasBox" class="hidden">
+<label>Parcelas</label>
+<select id="parcelas" onchange="atualizarResumo()">
+<option value="">Selecione</option>
+<option value="2">2x</option>
+<option value="3">3x</option>
+<option value="4">4x</option>
+<option value="5">5x</option>
+<option value="6">6x</option>
+<option value="7">7x</option>
+<option value="8">8x</option>
+<option value="9">9x</option>
+<option value="10">10x</option>
+</select>
+</div>
+
+<div class="resumo" id="resumo">
+<strong>Resumo do pedido:</strong><br>
+Preencha os dados acima
+</div>
+
+<button class="btn" onclick="enviarWhatsApp()">Finalizar no WhatsApp</button>
+
+<div class="footer">
+Atendimento em Rolândia<br>
+WhatsApp: (43) 9 9126-1624
+</div>
+
+</div>
+
+<script>
+const WHATSAPP = "5543991261624";
+
+const catalogo = {
+  60: [{ nome:"Interlagos Free 60A", avista:270, parcelado:299 }],
+  70: [
+    { nome:"Interlagos 70A", avista:300, parcelado:350 },
+    { nome:"Impact 70A", avista:360, parcelado:420 },
+    { nome:"Moura 70A", avista:780, parcelado:885.55 }
+  ]
+};
+
+function carregarProdutos() {
+  produto.innerHTML = "<option value=''>Selecione</option>";
+  produtoBox.classList.remove("hidden");
+  catalogo[amperagem.value]?.forEach((p,i)=>{
+    produto.innerHTML += `<option value="${i}">${p.nome}</option>`;
+  });
+  atualizarResumo();
+}
+
+function atualizarResumo() {
+  let texto = "<strong>Resumo do pedido:</strong><br>";
+  let total = 0;
+
+  const amp = amperagem.value;
+  const prod = catalogo[amp]?.[produto.value];
+
+  if(prod){
+    const precoBase = pagamento.value === "Parcelado" ? prod.parcelado : prod.avista;
+    total += precoBase;
+
+    texto += `Produto: ${prod.nome}<br>`;
+    texto += `Valor base: R$ ${precoBase.toFixed(2)}<br>`;
+
+    if(casco.value === "novo"){
+      const valorCasco = amp == 60 ? 70 : 80;
+      total += valorCasco;
+      texto += `Casco adicional: R$ ${valorCasco.toFixed(2)}<br>`;
+    } else if(casco.value === "troca"){
+      texto += "Casco: Base de troca<br>";
+    }
+  }
+
+  texto += `Cliente: ${nome.value}<br>`;
+  texto += `Endereço: ${endereco.value}<br>`;
+  texto += `Pagamento: ${pagamento.value}<br>`;
+
+  trocoBox.classList.toggle("hidden", pagamento.value !== "Dinheiro");
+  parcelasBox.classList.toggle("hidden", pagamento.value !== "Parcelado");
+
+  if(pagamento.value === "Dinheiro" && troco.value){
+    texto += `Troco para: R$ ${troco.value}<br>`;
+  }
+
+  if(pagamento.value === "Parcelado" && parcelas.value){
+    const valorParcela = total / parcelas.value;
+    texto += `Parcelas: ${parcelas.value}x de R$ ${valorParcela.toFixed(2)}<br>`;
+  }
+
+  if(total > 0){
+    texto += `<strong>Total: R$ ${total.toFixed(2)}</strong><br>`;
+  }
+
+  resumo.innerHTML = texto;
+}
+
+function enviarWhatsApp(){
+  window.open(
+    "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(resumo.innerText),
+    "_blank"
+  );
+}
+</script>
+
+</body>
+</html>
