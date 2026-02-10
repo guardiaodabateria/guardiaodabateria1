@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido de Bateria</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f1a;
+  color: #fff;
+  line-height: 1.4;
+}
+
+header {
+  background: #05070d;
+  padding: 20px;
+  text-align: center;
+}
+
+header img {
+  max-width: 260px;
+  height: auto;
+}
+
+.container {
+  max-width: 480px;
+  margin: auto;
+  padding: 15px;
+  min-height: calc(100vh - 80px);
+}
+
+.box {
+  background: #12172a;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #1b2345;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.primary {
+  background: #1e90ff;
+  color: #fff;
+}
+
+.primary:hover:not(:disabled) {
+  background: #4da6ff;
+}
+
+.secondary {
+  background: #1b2345;
+  color: #fff;
+  border: 1px solid #2c3a5f;
+}
+
+.secondary:hover:not(:disabled) {
+  background: #2c3a5f;
+}
+
+.success {
+  background: #28a745;
+  color: #fff;
+}
+
+.success:hover:not(:disabled) {
+  background: #34ce57;
+}
+
+.danger {
+  background: #dc3545;
+  color: #fff;
+}
+
+.danger:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.small-btn {
+  width: calc(50% - 4px);
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.small-btn:last-child {
+  margin-right: 0;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 6px;
+  border: 1px solid #2c3a5f;
+  background: #1b2345;
+  color: #fff;
+  font-size: 14px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #1e90ff;
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.parcelas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* CALENDÁRIO COMPACTO */
+.calendario-wrapper {
+  max-width: 320px;
+  margin: 15px auto;
+}
+
+.mes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #1b2345;
+  border-radius: 6px;
+}
+
+.mes-header button {
+  width: auto;
+  padding: 6px 12px;
+  margin: 0;
+  font-size: 18px;
+}
+
+.mes-nome {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dia-semana {
+  text-align: center;
+  font-weight: bold;
+  padding: 8px 4px;
+  background: #1b2345;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #aaa;
+}
+
+.dia {
+  text-align: center;
+  padding: 10px 4px;
+  background: #2c3a5f;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.dia:hover:not(.indisponivel):not(.vazio) {
+  background: #1e90ff;
+  transform: scale(1.05);
+}
+
+.dia.selecionado {
+  background: #1e90ff !important;
+  font-weight: bold;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.3);
+}
+
+.dia.indisponivel {
+  background: #1a1a1a;
+  color: #555;
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.dia.vazio {
+  background: transparent;
+  cursor: default;
+}
+
+.dia.hoje {
+  border: 2px solid #1e90ff;
+}
+
+/* HORÁRIOS */
+.horarios-section {
+  margin-top: 20px;
+}
+
+.horarios-section h4 {
+  margin-bottom: 10px;
+  color: #1e90ff;
+}
+
+.horarios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 400px;
+}
+
+.horario {
+  padding: 12px 8px;
+  background: #2c3a5f;
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  font-weight: 500;
+  border: 2px solid transparent;
+  position: relative;
+}
+
+.horario:hover:not(.ocupado) {
+  background: #1e90ff;
+  transform: translateY(-2px);
+}
+
+.horario.selecionado {
+  background: #1e90ff !important;
+  font-weight: bold;
+  color: #fff;
+  border-color: #4da6ff;
+  box-shadow: 0 0 0 1px #4da6ff;
+}
+
+.horario.ocupado {
+  background: #3d1a1a;
+  color: #ff6b6b;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.horario.ocupado::after {
+  content: '❌';
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 10px;
+}
+
+/* ADMIN HORÁRIO */
+.horario.admin-mode {
+  border: 2px dashed #ffa500;
+}
+
+.horario.admin-mode:hover {
+  background: #ffa500;
+}
+
+.whatsapp {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  background: #25d366;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 50px;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.whatsapp:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.6);
+}
+
+.admin-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: #ff6b6b;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  cursor: pointer;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.admin-btn:hover {
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.6);
+}
+
+.error {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.info-box {
+  background: #1b2345;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 10px 0;
+  border-left: 3px solid #1e90ff;
+}
+
+.warning-box {
+  background: #3d2a1a;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 10px 0;
+  border-left: 3px solid #ffa500;
+  color: #ffa500;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  overflow-y: auto;
+}
+
+.modal.ativo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+  padding-top: 40px;
+}
+
+.modal-content {
+  background: #12172a;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid #1b2345;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: #1e90ff;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #1b2345;
+}
+
+.tab {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  margin: 0;
+}
+
+.tab.ativo {
+  color: #1e90ff;
+  border-bottom-color: #1e90ff;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.ativo {
+  display: block;
+}
+
+.pedido-item {
+  background: #1b2345;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border-left: 3px solid #1e90ff;
+}
+
+.pedido-item small {
+  color: #888;
+}
+
+.pedido-item .pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.agendamento-manual {
+  background: #1b2345;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.horario-bloqueado-item {
+  background: #3d1a1a;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 3px solid #ff6b6b;
+}
+
+.horario-bloqueado-item button {
+  width: auto;
+  padding: 6px 12px;
+  margin: 0;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .box {
+    padding: 15px;
+  }
+  
+  .parcelas-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .calendario-wrapper {
+    max-width: 280px;
+  }
+  
+  .dia {
+    font-size: 12px;
+    min-height: 32px;
+    padding: 8px 2px;
+  }
+  
+  .horarios {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+  }
+  
+  .horario {
+    font-size: 13px;
+    padding: 10px 6px;
+  }
+  
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+</header>
+
+<div class="container">
+
+  <div id="etapa1" class="box">
+    <h3>🔋 O que você precisa?</h3>
+    <button class="primary" onclick="selecionarServico('bateria')">🔋 Comprar Bateria</button>
+    <button class="secondary" onclick="selecionarServico('socorro')">🚗 Socorro / Transferência</button>
+  </div>
+
+  <div id="etapas"></div>
+  <div id="baterias"></div>
+  <div id="dados"></div>
+  <div id="pagamento"></div>
+  <div id="agenda"></div>
+  <div id="resumo"></div>
+
+</div>
+
+<a class="whatsapp" href="https://wa.me/554391261624" target="_blank">
+  💬 WhatsApp
+</a>
+
+<button class="admin-btn" onclick="tentarAbrirAdmin()">⚙️ Admin</button>
+
+<!-- Modal Admin -->
+<div id="modalAdmin" class="modal">
+  <div class="modal-content">
+    <h3>⚙️ Painel Administrativo</h3>
+    
+    <div class="tabs">
+      <button class="tab ativo" onclick="mudarTab('pedidos')">📋 Pedidos</button>
+      <button class="tab" onclick="mudarTab('bloquear')">🚫 Bloquear Horários</button>
+      <button class="tab" onclick="mudarTab('bloqueados')">📅 Horários Bloqueados</button>
+    </div>
+    
+    <!-- Tab Pedidos -->
+    <div id="tabPedidos" class="tab-content ativo">
+      <div id="listaPedidos"></div>
+    </div>
+    
+    <!-- Tab Bloquear Horários -->
+    <div id="tabBloquear" class="tab-content">
+      <div class="warning-box">
+        <strong>⚠️ Modo de Bloqueio</strong><br>
+        <small>Selecione uma data e clique nos horários que deseja bloquear para clientes</small>
+      </div>
+      <div class="agendamento-manual">
+        <input type="date" id="dataBloqueio" onchange="mostrarHorariosBloqueio()">
+        <div id="horariosBloqueio" style="margin-top: 15px;"></div>
+      </div>
+    </div>
+    
+    <!-- Tab Bloqueados -->
+    <div id="tabBloqueados" class="tab-content">
+      <div id="listaBloqueados"></div>
+    </div>
+    
+    <button class="secondary" onclick="fecharAdmin()" style="margin-top: 20px;">Fechar</button>
+  </div>
+</div>
+
+<!-- Modal Login -->
+<div id="modalLogin" class="modal">
+  <div class="modal-content" style="max-width: 400px;">
+    <h3>🔐 Login Administrativo</h3>
+    <p style="color: #888;">Digite a senha de acesso:</p>
+    <input type="password" id="senhaAdmin" placeholder="Senha" onkeypress="if(event.key==='Enter') verificarSenha()">
+    <button class="primary" onclick="verificarSenha()">Entrar</button>
+    <button class="secondary" onclick="fecharLogin()">Cancelar</button>
+    <p id="erroSenha" class="error hidden">❌ Senha incorreta!</p>
+  </div>
+</div>
+
+<script>
+// ================== CONFIGURAÇÃO ==================
+// ALTERE A SENHA AQUI:
+const SENHA_ADMIN = 'admin123';  // ⚠️ TROQUE POR UMA SENHA FORTE!
+
+// ================== VARIÁVEIS GLOBAIS ==================
+const etapas = document.getElementById("etapas");
+const bateriasDiv = document.getElementById("baterias");
+const dadosDiv = document.getElementById("dados");
+const pagamentoDiv = document.getElementById("pagamento");
+const agenda = document.getElementById("agenda");
+const resumo = document.getElementById("resumo");
+
+let pedido = {};
+let mesAtual = new Date();
+let modoAdmin = false;
+let dataAdminSelecionada = null;
+
+// Configuração de baterias
+const bateriasCarro = {
+  45: {
+    casco: 60,
+    baterias: [
+      { nome:"Interlagos 45Ah Convencional", vista:259, prazo:299 },
+      { nome:"Interlagos 45Ah Selada", vista:289, prazo:329 },
+      { nome:"Impact 48Ah", vista:349, prazo:399 },
+      { nome:"Moura 48Ah", vista:519, prazo:589 },
+      { nome:"Heliar 48Ah", vista:519, prazo:589 }
+    ]
+  },
+  50: {
+    casco: 60,
+    baterias: [
+      { nome:"Impact 50Ah Selada (18 meses)", vista:389, prazo:449 },
+      { nome:"Moura 50Ah Selada (2 anos)", vista:529, prazo:599 },
+      { nome:"Heliar 50Ah Selada (2 anos)", vista:559, prazo:629 }
+    ]
+  },
+  60: {
+    casco: 70,
+    baterias: [
+      { nome:"Interlagos com manutenção", vista:279, prazo:319 },
+      { nome:"Interlagos Selada", vista:319, prazo:359 },
+      { nome:"Impact Premium", vista:399, prazo:459 },
+      { nome:"Impact Evolution", vista:449, prazo:519 },
+      { nome:"Moura", vista:539, prazo:609 },
+      { nome:"Heliar", vista:539, prazo:609 }
+    ]
+  },
+  70: {
+    casco: 80,
+    baterias: [
+      { nome:"Interlagos 70Ah com manutenção (1 ano)", vista:349, prazo:399 },
+      { nome:"Interlagos 70Ah Selada (1 ano)", vista:399, prazo:459 },
+      { nome:"Impact 70Ah Selada (1 ano)", vista:449, prazo:509 },
+      { nome:"Moura 70Ah Selada (2 anos)", vista:780, prazo:890 }
+    ]
+  }
+};
+
+// ================== FUNÇÕES LOCALSTORAGE ==================
+
+function buscarPedidos() {
+  const dados = localStorage.getItem('pedidos');
+  return dados ? JSON.parse(dados) : [];
+}
+
+function salvarPedido(novoPedido) {
+  const pedidos = buscarPedidos();
+  novoPedido.id = Date.now();
+  novoPedido.timestamp = new Date().toISOString();
+  pedidos.push(novoPedido);
+  localStorage.setItem('pedidos', JSON.stringify(pedidos));
+  return true;
+}
+
+function buscarHorariosBloqueados() {
+  const dados = localStorage.getItem('horariosBloqueados');
+  return dados ? JSON.parse(dados) : [];
+}
+
+function bloquearHorario(data, horario, motivo = 'Bloqueado manualmente') {
+  const bloqueados = buscarHorariosBloqueados();
+  const novo = {
+    id: Date.now(),
+    data,
+    horario,
+    motivo,
+    timestamp: new Date().toISOString()
+  };
+  bloqueados.push(novo);
+  localStorage.setItem('horariosBloqueados', JSON.stringify(bloqueados));
+}
+
+function desbloquearHorario(id) {
+  let bloqueados = buscarHorariosBloqueados();
+  bloqueados = bloqueados.filter(h => h.id !== id);
+  localStorage.setItem('horariosBloqueados', JSON.stringify(bloqueados));
+}
+
+function verificarHorarioOcupado(data, horario) {
+  const bloqueados = buscarHorariosBloqueados();
+  return bloqueados.some(h => h.data === data && h.horario === horario);
+}
+
+function removerPedido(id) {
+  let pedidos = buscarPedidos();
+  pedidos = pedidos.filter(p => p.id !== id);
+  localStorage.setItem('pedidos', JSON.stringify(pedidos));
+}
+
+// ================== ADMIN - LOGIN ==================
+
+function tentarAbrirAdmin() {
+  document.getElementById('modalLogin').classList.add('ativo');
+  document.getElementById('senhaAdmin').value = '';
+  document.getElementById('erroSenha').classList.add('hidden');
+  setTimeout(() => document.getElementById('senhaAdmin').focus(), 100);
+}
+
+function verificarSenha() {
+  const senha = document.getElementById('senhaAdmin').value;
+  
+  if (senha === SENHA_ADMIN) {
+    fecharLogin();
+    abrirAdmin();
+  } else {
+    document.getElementById('erroSenha').classList.remove('hidden');
+    document.getElementById('senhaAdmin').value = '';
+    document.getElementById('senhaAdmin').focus();
+  }
+}
+
+function fecharLogin() {
+  document.getElementById('modalLogin').classList.remove('ativo');
+}
+
+// ================== ADMIN - PAINEL ==================
+
+function abrirAdmin() {
+  const modal = document.getElementById('modalAdmin');
+  modal.classList.add('ativo');
+  atualizarTabPedidos();
+  atualizarTabBloqueados();
+}
+
+function fecharAdmin() {
+  document.getElementById('modalAdmin').classList.remove('ativo');
+  modoAdmin = false;
+}
+
+function mudarTab(nome) {
+  // Atualizar botões
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('ativo'));
+  event.target.classList.add('ativo');
+  
+  // Atualizar conteúdo
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('ativo'));
+  
+  if (nome === 'pedidos') {
+    document.getElementById('tabPedidos').classList.add('ativo');
+    atualizarTabPedidos();
+  } else if (nome === 'bloquear') {
+    document.getElementById('tabBloquear').classList.add('ativo');
+  } else if (nome === 'bloqueados') {
+    document.getElementById('tabBloqueados').classList.add('ativo');
+    atualizarTabBloqueados();
+  }
+}
+
+function atualizarTabPedidos() {
+  const lista = document.getElementById('listaPedidos');
+  const pedidos = buscarPedidos();
+  
+  if (pedidos.length === 0) {
+    lista.innerHTML = '<p style="color: #888; text-align: center;">Nenhum pedido ainda.</p>';
+    return;
+  }
+  
+  pedidos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  
+  let html = '';
+  pedidos.forEach(p => {
+    const data = new Date(p.dataAgendamento + 'T12:00:00').toLocaleDateString('pt-BR');
+    const dataPedido = new Date(p.timestamp).toLocaleString('pt-BR');
+    
+    html += `
+      <div class="pedido-item">
+        <div class="pedido-header">
+          <strong>${p.nome}</strong>
+          <button class="danger" style="width: auto; padding: 6px 12px; margin: 0; font-size: 12px;" 
+                  onclick="if(confirm('Remover este pedido?')) { removerPedido(${p.id}); atualizarTabPedidos(); }">
+            ❌ Remover
+          </button>
+        </div>
+        <small>📅 Agendado: ${data} às ${p.horario}</small><br>
+        <small>📱 ${p.telefone}</small><br>
+        <small>🚗 ${p.veiculo}</small><br>
+        ${p.tipo === 'bateria' ? `<small>🔋 ${p.produto}</small><br>` : '<small>🚗 Socorro</small><br>'}
+        <small style="color: #666;">Pedido feito em: ${dataPedido}</small>
+      </div>`;
+  });
+  
+  lista.innerHTML = html;
+}
+
+function mostrarHorariosBloqueio() {
+  const data = document.getElementById('dataBloqueio').value;
+  if (!data) return;
+  
+  dataAdminSelecionada = data;
+  const divHorarios = document.getElementById('horariosBloqueio');
+  
+  const dataObj = new Date(data + 'T12:00:00');
+  const diaSemana = dataObj.getDay();
+  
+  let horariosDisponiveis = [];
+  
+  if (diaSemana === 0) {
+    // Domingo: 9h às 22h
+    for (let h = 9; h <= 22; h++) {
+      horariosDisponiveis.push(`${h.toString().padStart(2, '0')}:00`);
+    }
+  } else if (diaSemana === 6) {
+    // Sábado: 13h às 22h
+    for (let h = 13; h <= 22; h++) {
+      horariosDisponiveis.push(`${h.toString().padStart(2, '0')}:00`);
+    }
+  } else {
+    // Seg-Sex: 18:30 às 22h
+    horariosDisponiveis = ["18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"];
+  }
+  
+  let html = '<div class="horarios">';
+  horariosDisponiveis.forEach(h => {
+    const ocupado = verificarHorarioOcupado(data, h);
+    const classes = ocupado ? 'horario ocupado' : 'horario admin-mode';
+    const onclick = `toggleBloqueioHorario('${data}', '${h}')`;
+    
+    html += `<div class="${classes}" onclick="${onclick}">${h}</div>`;
+  });
+  html += '</div>';
+  
+  divHorarios.innerHTML = html;
+}
+
+function toggleBloqueioHorario(data, horario) {
+  const bloqueados = buscarHorariosBloqueados();
+  const existe = bloqueados.find(h => h.data === data && h.horario === horario);
+  
+  if (existe) {
+    desbloquearHorario(existe.id);
+  } else {
+    bloquearHorario(data, horario);
+  }
+  
+  mostrarHorariosBloqueio();
+  atualizarTabBloqueados();
+}
+
+function atualizarTabBloqueados() {
+  const lista = document.getElementById('listaBloqueados');
+  const bloqueados = buscarHorariosBloqueados();
+  
+  if (bloqueados.length === 0) {
+    lista.innerHTML = '<p style="color: #888; text-align: center;">Nenhum horário bloqueado.</p>';
+    return;
+  }
+  
+  bloqueados.sort((a, b) => new Date(a.data + ' ' + a.horario) - new Date(b.data + ' ' + b.horario));
+  
+  let html = '';
+  bloqueados.forEach(h => {
+    const data = new Date(h.data + 'T12:00:00').toLocaleDateString('pt-BR');
+    
+    html += `
+      <div class="horario-bloqueado-item">
+        <div>
+          <strong>📅 ${data} às ${h.horario}</strong><br>
+          <small>${h.motivo}</small>
+        </div>
+        <button class="danger" onclick="desbloquearHorario(${h.id}); atualizarTabBloqueados(); mostrarHorariosBloqueio();">
+          🗑️ Liberar
+        </button>
+      </div>`;
+  });
+  
+  lista.innerHTML = html;
+}
+
+// ================== FUNÇÕES PRINCIPAIS ==================
+
+function limparFluxo() {
+  etapas.innerHTML = "";
+  bateriasDiv.innerHTML = "";
+  dadosDiv.innerHTML = "";
+  pagamentoDiv.innerHTML = "";
+  agenda.innerHTML = "";
+  resumo.innerHTML = "";
+}
+
+function selecionarServico(tipo) {
+  pedido = { tipo };
+  limparFluxo();
+
+  if (tipo === "socorro") {
+    mostrarDadosSocorro();
+    return;
+  }
+
+  etapas.innerHTML = `
+    <div class="box">
+      <h3>⚡ Selecione a amperagem</h3>
+      <button class="secondary" onclick="mostrarBaterias(45)">45 amperes</button>
+      <button class="secondary" onclick="mostrarBaterias(50)">50 amperes (Caixa Alta)</button>
+      <button class="secondary" onclick="mostrarBaterias(60)">60 amperes</button>
+      <button class="secondary" onclick="mostrarBaterias(70)">70 amperes</button>
+    </div>`;
+}
+
+function mostrarDadosSocorro() {
+  dadosDiv.innerHTML = `
+    <div class="box">
+      <h3>🚗 Socorro / Transferência</h3>
+      <input type="text" placeholder="Nome completo *" oninput="pedido.nome=this.value">
+      <input type="tel" placeholder="Telefone *" oninput="pedido.telefone=this.value">
+      <input type="text" placeholder="Modelo do carro *" oninput="pedido.modelo=this.value">
+      <input type="text" placeholder="Ano do carro *" oninput="pedido.ano=this.value">
+      <textarea placeholder="Endereço detalhado *" oninput="pedido.endereco=this.value" rows="3"></textarea>
+      <textarea placeholder="Observações (opcional)" oninput="pedido.observacoes=this.value" rows="2"></textarea>
+      <button class="primary" onclick="validarDadosSocorro()">Continuar para agendamento</button>
+    </div>`;
+}
+
+function validarDadosSocorro() {
+  if (!pedido.nome || !pedido.telefone || !pedido.modelo || !pedido.ano || !pedido.endereco) {
+    alert("⚠️ Por favor, preencha todos os campos obrigatórios.");
+    return;
+  }
+  pedido.veiculo = `${pedido.modelo} ${pedido.ano}`;
+  mostrarAgendamento();
+}
+
+function mostrarBaterias(amp) {
+  pedido.amperagem = amp;
+  pedido.valorCasco = bateriasCarro[amp].casco;
+  bateriasDiv.innerHTML = "";
+
+  let html = bateriasCarro[amp].baterias.map((b,i)=>`
+    <button class="secondary" onclick="selecionarBateria(${i})">
+      <strong>${b.nome}</strong><br>
+      💰 À vista R$ ${b.vista} | 💳 Até 10x R$ ${b.prazo}
+    </button>`).join("");
+
+  bateriasDiv.innerHTML = `
+    <div class="box">
+      <h3>🔋 Escolha a bateria (${amp}Ah)</h3>
+      <div class="info-box">
+        <small>💡 Casco desta amperagem: R$ ${pedido.valorCasco}</small>
+      </div>
+      ${html}
+    </div>`;
+}
+
+function selecionarBateria(i) {
+  pedido.bateria = bateriasCarro[pedido.amperagem].baterias[i];
+  pedido.produto = pedido.bateria.nome;
+
+  dadosDiv.innerHTML = `
+    <div class="box">
+      <h3>📋 Seus dados</h3>
+      <input type="text" placeholder="Nome completo *" oninput="pedido.nome=this.value">
+      <input type="tel" placeholder="Telefone *" oninput="pedido.telefone=this.value">
+      <input type="text" placeholder="Modelo do carro *" oninput="pedido.modelo=this.value">
+      <input type="text" placeholder="Ano do carro *" oninput="pedido.ano=this.value">
+      <textarea placeholder="Endereço de entrega *" oninput="pedido.endereco=this.value" rows="3"></textarea>
+      <button class="primary" onclick="validarDados()">Continuar</button>
+    </div>`;
+  
+  dadosDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function validarDados() {
+  if (!pedido.nome || !pedido.telefone || !pedido.modelo || !pedido.ano || !pedido.endereco) {
+    alert("⚠️ Por favor, preencha todos os campos obrigatórios.");
+    return;
+  }
+  pedido.veiculo = `${pedido.modelo} ${pedido.ano}`;
+  mostrarTrocaCasco();
+}
+
+function mostrarTrocaCasco() {
+  pagamentoDiv.innerHTML = `
+    <div class="box">
+      <h3>🔄 Base de troca</h3>
+      <p>Você tem bateria usada para troca?</p>
+      <div class="info-box">
+        <small>💡 Com troca: apenas o valor da bateria<br>
+        💡 Sem troca: +R$ ${pedido.valorCasco} (casco)</small>
+      </div>
+      <div class="grid-2">
+        <button class="success small-btn" onclick="definirTroca(true)">✅ Sim, tenho</button>
+        <button class="secondary small-btn" onclick="definirTroca(false)">❌ Não tenho</button>
+      </div>
+    </div>`;
+  
+  pagamentoDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function definirTroca(temTroca) {
+  pedido.base = temTroca;
+  mostrarPagamento();
+}
+
+function mostrarPagamento() {
+  let total = pedido.bateria.vista;
+  let cascoTexto = "";
+  
+  if (!pedido.base) {
+    total += pedido.valorCasco;
+    cascoTexto = `<p style="color: #ff9800;">⚠️ Sem troca: +R$ ${pedido.valorCasco} (casco)</p>`;
+  }
+
+  pagamentoDiv.innerHTML = `
+    <div class="box">
+      <h3>💳 Forma de Pagamento</h3>
+      <div class="info-box">
+        <p><strong>${pedido.bateria.nome}</strong></p>
+        <p>💰 À vista: R$ ${pedido.bateria.vista}</p>
+        ${cascoTexto}
+        <p style="font-size: 16px; color: #28a745;"><strong>Total à vista: R$ ${total}</strong></p>
+      </div>
+      
+      <select id="selectPagamento" onchange="selecionarFormaPagamento(this.value)">
+        <option value="">Selecione forma de pagamento</option>
+        <option value="pix">💰 PIX</option>
+        <option value="dinheiro">💵 Dinheiro</option>
+        <option value="debito">💳 Cartão Débito</option>
+        <option value="credito_vista">💳 Cartão Crédito à Vista</option>
+        <option value="credito_parcelado">💳 Cartão Crédito Parcelado (2x-10x)</option>
+      </select>
+      
+      <div id="dinheiroDiv"></div>
+      <div id="parcelasDiv"></div>
+      <div id="btnContinuar"></div>
+    </div>`;
+  
+  pagamentoDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selecionarFormaPagamento(forma) {
+  pedido.formaPagamento = forma;
+  const dinheiroDiv = document.getElementById("dinheiroDiv");
+  const parcelasDiv = document.getElementById("parcelasDiv");
+  const btnContinuar = document.getElementById("btnContinuar");
+  
+  dinheiroDiv.innerHTML = "";
+  parcelasDiv.innerHTML = "";
+  btnContinuar.innerHTML = "";
+  
+  if (forma === "dinheiro") {
+    dinheiroDiv.innerHTML = `
+      <div style="margin-top: 15px;">
+        <p>💵 Precisa de troco?</p>
+        <div class="grid-2">
+          <button class="secondary small-btn" onclick="definirTroco(true)">Sim</button>
+          <button class="secondary small-btn" onclick="definirTroco(false)">Não</button>
+        </div>
+        <div id="valorTrocoDiv"></div>
+      </div>`;
+  } else if (forma === "credito_parcelado") {
+    mostrarParcelas();
+  } else if (forma) {
+    pedido.parcelas = 1;
+    pedido.valorFinal = pedido.base ? pedido.bateria.vista : (pedido.bateria.vista + pedido.valorCasco);
+    btnContinuar.innerHTML = `<button class="primary" onclick="mostrarAgendamento()" style="margin-top: 15px;">Continuar para agendamento</button>`;
+  }
+}
+
+function definirTroco(precisaTroco) {
+  pedido.precisaTroco = precisaTroco;
+  const valorTrocoDiv = document.getElementById("valorTrocoDiv");
+  const btnContinuar = document.getElementById("btnContinuar");
+  
+  if (precisaTroco) {
+    valorTrocoDiv.innerHTML = `
+      <input type="number" id="valorTroco" placeholder="Para quanto? (ex: 100)" 
+             oninput="pedido.valorTroco=this.value" 
+             style="margin-top: 10px;">`;
+  } else {
+    valorTrocoDiv.innerHTML = "";
+  }
+  
+  pedido.parcelas = 1;
+  pedido.valorFinal = pedido.base ? pedido.bateria.vista : (pedido.bateria.vista + pedido.valorCasco);
+  btnContinuar.innerHTML = `<button class="primary" onclick="validarTroco()" style="margin-top: 15px;">Continuar para agendamento</button>`;
+}
+
+function validarTroco() {
+  if (pedido.precisaTroco && !pedido.valorTroco) {
+    alert("⚠️ Por favor, informe para quanto precisa de troco.");
+    return;
+  }
+  mostrarAgendamento();
+}
+
+function mostrarParcelas() {
+  const parcelasDiv = document.getElementById("parcelasDiv");
+  let total = pedido.base ? pedido.bateria.prazo : (pedido.bateria.prazo + pedido.valorCasco);
+  
+  let parcelasHtml = "<h4 style='margin-top: 15px;'>💳 Escolha as parcelas</h4><div class='parcelas-grid'>";
+  for (let i = 2; i <= 10; i++) {
+    let valorParcela = (total / i).toFixed(2);
+    parcelasHtml += `<button class="secondary" onclick="selecionarParcelas(${i}, ${valorParcela})">${i}x R$ ${valorParcela}</button>`;
+  }
+  parcelasHtml += "</div>";
+  
+  parcelasDiv.innerHTML = parcelasHtml;
+}
+
+function selecionarParcelas(qtd, valor) {
+  pedido.parcelas = qtd;
+  pedido.valorParcela = valor;
+  pedido.valorFinal = pedido.base ? pedido.bateria.prazo : (pedido.bateria.prazo + pedido.valorCasco);
+  
+  const parcelasDiv = document.getElementById("parcelasDiv");
+  const btnContinuar = document.getElementById("btnContinuar");
+  
+  parcelasDiv.innerHTML = `
+    <div class="info-box" style="margin-top: 15px;">
+      <p style="color: #28a745;">✅ Selecionado: ${qtd}x de R$ ${valor}</p>
+      <p><strong>Total: R$ ${pedido.valorFinal}</strong></p>
+    </div>`;
+  
+  btnContinuar.innerHTML = `<button class="primary" onclick="mostrarAgendamento()">Continuar para agendamento</button>`;
+}
+
+// ================== AGENDAMENTO COM CALENDÁRIO ==================
+
+function mostrarAgendamento() {
+  const hoje = new Date();
+  mesAtual = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+  
+  agenda.innerHTML = `
+    <div class="box">
+      <h3>📅 Agendamento</h3>
+      ${pedido.tipo === "socorro" ? 
+        '<div class="info-box"><small>🚨 Socorro - R$ 50,00<br>📦 Pode agendar a qualquer momento para os horários:<br>Seg-Sex 18:30-22h | Sáb 13-22h | Dom 9-22h<br>🔥 "Imediato" disponível apenas durante horário de atendimento</small></div>' :
+        '<div class="info-box"><small>📦 Seg-Sex: peça até 18h | Sáb: até 12h<br>🚚 Entregas: Seg-Sex 18:30-22h | Sáb 13-22h | Dom 9-22h</small></div>'
+      }
+      
+      <div class="calendario-wrapper">
+        <div class="mes-header">
+          <button class="secondary" onclick="mudarMes(-1)">◀</button>
+          <span class="mes-nome" id="mesNome"></span>
+          <button class="secondary" onclick="mudarMes(1)">▶</button>
+        </div>
+        <div id="calendario" class="calendario"></div>
+      </div>
+      
+      <div id="horarios-section" class="horarios-section hidden">
+        <h4>⏰ Horários disponíveis</h4>
+        <div id="horarios" class="horarios"></div>
+      </div>
+      
+      <button id="confirmarBtn" class="success hidden" onclick="finalizarPedido()">✅ Confirmar pedido</button>
+    </div>`;
+  
+  agenda.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  gerarCalendario();
+}
+
+function mudarMes(direcao) {
+  mesAtual.setMonth(mesAtual.getMonth() + direcao);
+  gerarCalendario();
+}
+
+function gerarCalendario() {
+  const calendario = document.getElementById("calendario");
+  const mesNome = document.getElementById("mesNome");
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  
+  const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  
+  mesNome.textContent = `${meses[mesAtual.getMonth()]} ${mesAtual.getFullYear()}`;
+  
+  const diasSemana = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+  let html = diasSemana.map(d => `<div class="dia-semana">${d}</div>`).join('');
+  
+  const primeiroDia = new Date(mesAtual.getFullYear(), mesAtual.getMonth(), 1);
+  const ultimoDia = new Date(mesAtual.getFullYear(), mesAtual.getMonth() + 1, 0);
+  
+  // Dias vazios antes do primeiro dia
+  for (let i = 0; i < primeiroDia.getDay(); i++) {
+    html += '<div class="dia vazio"></div>';
+  }
+  
+  // Verificar regras de agendamento
+  const agora = new Date();
+  const horaAtual = agora.getHours();
+  const diaAtual = agora.getDay();
+  
+  let podeAgendarHoje = false;
+  if (pedido.tipo === "socorro") {
+    // Socorro: sempre pode agendar para qualquer dia
+    podeAgendarHoje = true;
+  } else {
+    if (diaAtual >= 1 && diaAtual <= 5 && horaAtual < 18) podeAgendarHoje = true;
+    if (diaAtual === 6 && horaAtual < 12) podeAgendarHoje = true;
+  }
+  
+  // Gerar dias do mês
+  for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+    const data = new Date(mesAtual.getFullYear(), mesAtual.getMonth(), dia);
+    data.setHours(0, 0, 0, 0);
+    const dataStr = data.toISOString().split('T')[0];
+    const diaSemana = data.getDay();
+    const isDomingo = diaSemana === 0;
+    const ehHoje = data.getTime() === hoje.getTime();
+    const ehPassado = data < hoje;
+    
+    let classes = ['dia'];
+    let disponivel = true;
+    
+    if (ehPassado) {
+      disponivel = false;
+    } else if (ehHoje && !podeAgendarHoje) {
+      disponivel = false;
+    } else if (isDomingo && pedido.tipo !== "socorro") {
+      // Domingo indisponível apenas para baterias
+      disponivel = false;
+    }
+    
+    if (!disponivel) classes.push('indisponivel');
+    if (ehHoje) classes.push('hoje');
+    
+    html += `<div class="${classes.join(' ')}" 
+             ${disponivel ? `onclick="selecionarDia('${dataStr}')" data-date="${dataStr}"` : ''}>
+             ${dia}</div>`;
+  }
+  
+  calendario.innerHTML = html;
+}
+
+function selecionarDia(dataStr) {
+  pedido.dataAgendamento = dataStr;
+  const data = new Date(dataStr + 'T12:00:00');
+  
+  document.querySelectorAll('.dia').forEach(d => d.classList.remove('selecionado'));
+  
+  const diaElement = document.querySelector(`[data-date="${dataStr}"]`);
+  if (diaElement) {
+    diaElement.classList.add('selecionado');
+  }
+  
+  gerarHorarios(data);
+}
+
+function gerarHorarios(data) {
+  const horariosSection = document.getElementById("horarios-section");
+  const horarios = document.getElementById("horarios");
+  const diaSemana = data.getDay();
+  const dataStr = data.toISOString().split('T')[0];
+  const hoje = new Date();
+  const agora = hoje.getHours();
+  const ehHoje = data.toDateString() === hoje.toDateString();
+  
+  let horariosDisponiveis = [];
+  
+  // Horários de entrega (mesmos para socorro e bateria)
+  if (diaSemana === 0) {
+    // Domingo: 9h às 22h
+    for (let h = 9; h <= 22; h++) {
+      horariosDisponiveis.push(`${h.toString().padStart(2, '0')}:00`);
+    }
+  } else if (diaSemana === 6) {
+    // Sábado: 13h às 22h
+    for (let h = 13; h <= 22; h++) {
+      horariosDisponiveis.push(`${h.toString().padStart(2, '0')}:00`);
+    }
+  } else {
+    // Seg-Sex: 18:30 às 22h
+    horariosDisponiveis = ["18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"];
+  }
+  
+  let htmlHorarios = horariosDisponiveis.map(h => {
+    const ocupado = verificarHorarioOcupado(dataStr, h);
+    const classes = ocupado ? 'horario ocupado' : 'horario';
+    const onclick = ocupado ? '' : `onclick="selecionarHorario('${h}')"`;
+    return `<div class="${classes}" ${onclick}>${h}</div>`;
+  }).join("");
+  
+  // Adicionar botão "Imediato" para socorro SE for hoje E estiver no horário de atendimento
+  if (pedido.tipo === "socorro" && ehHoje) {
+    let dentroHorario = false;
+    
+    if (diaSemana === 0 && agora >= 9 && agora < 22) { // Domingo
+      dentroHorario = true;
+    } else if (diaSemana === 6 && agora >= 13 && agora < 22) { // Sábado
+      dentroHorario = true;
+    } else if (diaSemana >= 1 && diaSemana <= 5 && agora >= 18 && agora < 22) { // Seg-Sex
+      dentroHorario = true;
+    }
+    
+    if (dentroHorario) {
+      htmlHorarios = `<div class="horario" onclick="selecionarHorario('Imediato')" style="background: #ff6b6b; grid-column: span 3;">🚨 Socorro Imediato</div>` + htmlHorarios;
+    }
+  }
+  
+  horarios.innerHTML = htmlHorarios;
+  horariosSection.classList.remove('hidden');
+  
+  setTimeout(() => {
+    horariosSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+function selecionarHorario(horario) {
+  pedido.horario = horario;
+  
+  document.querySelectorAll('.horario').forEach(h => h.classList.remove('selecionado'));
+  event.target.classList.add('selecionado');
+  
+  document.getElementById("confirmarBtn").classList.remove('hidden');
+}
+
+function finalizarPedido() {
+  if (!pedido.nome || !pedido.telefone || !pedido.endereco) {
+    alert("⚠️ Dados incompletos!");
+    return;
+  }
+  
+  if (!pedido.dataAgendamento || !pedido.horario) {
+    alert("⚠️ Selecione data e horário!");
+    return;
+  }
+  
+  // Adicionar valor para socorro
+  if (pedido.tipo === "socorro") {
+    pedido.valorFinal = 50;
+    pedido.produto = "Socorro / Transferência";
+  }
+  
+  // Salvar pedido
+  salvarPedido(pedido);
+  
+  mostrarResumoFinal();
+}
+
+function mostrarResumoFinal() {
+  const data = new Date(pedido.dataAgendamento + 'T12:00:00');
+  const dataFormatada = data.toLocaleDateString('pt-BR');
+  
+  let resumoHtml = `
+    <div class="box">
+      <h3>✅ Pedido Confirmado!</h3>
+      <div class="info-box">`;
+  
+  if (pedido.tipo === "bateria") {
+    let valorTotal = pedido.valorFinal || pedido.bateria.vista;
+    let formaPagTexto = pedido.formaPagamento.replace('_', ' ').toUpperCase();
+    let parcelasTexto = "";
+    
+    if (pedido.parcelas > 1) {
+      parcelasTexto = `${pedido.parcelas}x de R$ ${pedido.valorParcela}`;
+    } else {
+      parcelasTexto = `À vista - R$ ${valorTotal}`;
+    }
+    
+    resumoHtml += `
+      <p><strong>🔋 ${pedido.bateria.nome}</strong></p>
+      <p>⚡ ${pedido.amperagem}Ah</p>
+      <p>💳 ${formaPagTexto}: ${parcelasTexto}</p>
+      <p>🔄 Troca: ${pedido.base ? 'Sim' : 'Não (+ casco R$ ' + pedido.valorCasco + ')'}</p>`;
+    
+    if (pedido.formaPagamento === "dinheiro" && pedido.precisaTroco) {
+      resumoHtml += `<p>💵 Troco para: R$ ${pedido.valorTroco}</p>`;
+    }
+  } else {
+    resumoHtml += `
+      <p><strong>🚗 Socorro / Transferência</strong></p>
+      <p>💰 Valor: R$ 50,00</p>`;
+  }
+  
+  resumoHtml += `
+        <hr style="border-color: #2c3a5f; margin: 10px 0;">
+        <p>👤 <strong>${pedido.nome}</strong></p>
+        <p>📱 ${pedido.telefone}</p>
+        <p>🚗 ${pedido.veiculo}</p>
+        <p>📍 ${pedido.endereco}</p>
+        <p>📅 ${dataFormatada} às ${pedido.horario}</p>
+        ${pedido.observacoes ? `<p>📝 ${pedido.observacoes}</p>` : ''}
+      </div>
+      <button class="success" onclick="enviarWhatsApp()">📱 Enviar para WhatsApp</button>
+      <button class="secondary" onclick="location.reload()" style="margin-top: 10px;">🔄 Fazer novo pedido</button>
+    </div>`;
+    
+  resumo.innerHTML = resumoHtml;
+  resumo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function enviarWhatsApp() {
+  const data = new Date(pedido.dataAgendamento + 'T12:00:00').toLocaleDateString('pt-BR');
+  
+  let mensagem = `🔋 *NOVO PEDIDO*\n\n`;
+  
+  if (pedido.tipo === "bateria") {
+    mensagem += `*PRODUTO*\n`;
+    mensagem += `🔋 ${pedido.bateria.nome}\n`;
+    mensagem += `⚡ Amperagem: ${pedido.amperagem}Ah\n\n`;
+    
+    mensagem += `*PAGAMENTO*\n`;
+    let formaPag = pedido.formaPagamento.replace('_', ' ').toUpperCase();
+    mensagem += `💳 ${formaPag}`;
+    
+    if (pedido.parcelas > 1) {
+      mensagem += ` - ${pedido.parcelas}x R$ ${pedido.valorParcela}\n`;
+      mensagem += `💰 Total: R$ ${pedido.valorFinal}\n`;
+    } else {
+      mensagem += `\n💰 Total: R$ ${pedido.valorFinal}\n`;
+    }
+    
+    mensagem += `🔄 Base de troca: ${pedido.base ? 'SIM' : 'NÃO (+ casco R$ ' + pedido.valorCasco + ')'}\n`;
+    
+    if (pedido.formaPagamento === "dinheiro") {
+      mensagem += `💵 Troco: ${pedido.precisaTroco ? 'SIM - Para R$ ' + pedido.valorTroco : 'NÃO'}\n`;
+    }
+    
+    mensagem += `\n`;
+  } else {
+    mensagem += `*SERVIÇO*\n🚗 Socorro / Transferência de Carga\n`;
+    mensagem += `💰 Valor: R$ 50,00\n\n`;
+  }
+  
+  mensagem += `*CLIENTE*\n`;
+  mensagem += `👤 ${pedido.nome}\n`;
+  mensagem += `📱 ${pedido.telefone}\n`;
+  mensagem += `🚗 ${pedido.veiculo}\n`;
+  mensagem += `📍 ${pedido.endereco}\n\n`;
+  
+  mensagem += `*AGENDAMENTO*\n`;
+  mensagem += `📅 ${data}\n`;
+  mensagem += `⏰ ${pedido.horario}\n`;
+  
+  if (pedido.observacoes) {
+    mensagem += `\n*OBSERVAÇÕES*\n📝 ${pedido.observacoes}\n`;
+  }
+  
+  const url = `https://wa.me/554391261624?text=${encodeURIComponent(mensagem)}`;
+  window.open(url, '_blank');
+}
+
+// Prevenir reload ao apertar Enter
+document.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+    e.preventDefault();
+  }
+});
+</script>
+
+</body>
+</html>
